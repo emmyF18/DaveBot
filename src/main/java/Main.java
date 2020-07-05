@@ -43,7 +43,7 @@ public class Main
        });
         api.addMessageCreateListener(event -> {
             if(event.getMessageContent().equalsIgnoreCase("!daveinfo"))
-                event.getChannel().sendMessage("Dave is created in Java using the Javacord library, and was created by Dan! " +
+                event.getChannel().sendMessage("Dave is created in Java using the Javacord library, and was created by Dan! Dave's code can be found at https://github.com/emmyF18/DaveBot." +
                         "If you have any ideas or questions about Dave, feel free to message them.");
         });
         api.addMessageCreateListener(event -> {
