@@ -14,23 +14,12 @@ public class ChangePrompts implements MessageCreateListener
         //TODO make this role permitted
         if (event.getMessageContent().toLowerCase().startsWith("!updateprompts "))
         {
-            boolean correctRole;
-            Optional<User> author;
-            author = event.getMessage().getAuthor().asUser();
-            if(author.isPresent() || event.getServer().isPresent())
-            {
-                List<Role> roles = author.get().getRoles(event.getServer().get());
-                correctRole = checkRole(roles);
-                if (correctRole)
-                {
                     String fullcommand = event.getMessageContent();
                     if (fullcommand.length() > 14)
                     {
                         Main.weeklyPrompts = fullcommand.substring(15);
                         event.getChannel().sendMessage("Prompts updated!");
                     }
-                }
-            }
         }
     }
     private boolean checkRole(List<Role> roles)

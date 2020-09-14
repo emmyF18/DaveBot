@@ -18,7 +18,7 @@ public class Prompts implements MessageCreateListener
         }
         if (event.getMessageContent().equalsIgnoreCase("!prompts"))
         {
-            event.getChannel().sendMessage("This weeks prompts are: " + Main.weeklyPrompts + ". Feel free to talk about these prompts in #prompt-responses!");
+            event.getChannel().sendMessage("This weeks prompts are: " + Main.weeklyPrompts + " Feel free to talk about these prompts in #prompt-responses!");
         }
     }
 
