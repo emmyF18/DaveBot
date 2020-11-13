@@ -14,18 +14,21 @@ public class Roles implements MessageCreateListener
     private String allroles = "";
     public Roles()
     {
-        assignableRoles.add("Purple");
-        assignableRoles.add("Pink");
-        assignableRoles.add("Blue");
-        assignableRoles.add("Green");
-        assignableRoles.add("Red");
-        assignableRoles.add("Yellow");
-        assignableRoles.add("White");
-        assignableRoles.add("Gratitude Notification Squad");
+        assignableRoles.add("purple");
+        assignableRoles.add("pink");
+        assignableRoles.add("blue");
+        assignableRoles.add("green");
+        assignableRoles.add("red");
+        assignableRoles.add("yellow");
+        assignableRoles.add("white");
+        assignableRoles.add("gratitude notification squad");
+        StringBuilder stringBuilder = new StringBuilder(allroles);
         for (String roles:assignableRoles)
         {
-            allroles = allroles +" " + roles;
+            stringBuilder.append("\n").append(roles);
+            //allroles = allroles + "\n " + roles;
         }
+        allroles = stringBuilder.toString();
     }
     @Override
     public void onMessageCreate(MessageCreateEvent event)
@@ -33,16 +36,20 @@ public class Roles implements MessageCreateListener
         if (event.getMessageContent().contains("!addrole"))
         {
             Optional<User> user = event.getMessageAuthor().asUser();
-            String newRole = event.getMessageContent().substring(9);
+            String newRole = event.getMessageContent().substring(9).toLowerCase();
             if(assignableRoles.contains(newRole) && user.isPresent() && event.getServer().isPresent() && !event.getServer().get().getRolesByNameIgnoreCase(newRole).isEmpty())
             {
                 Role role = event.getServer().get().getRolesByNameIgnoreCase(newRole).get(0);
+                role.addUser(user.get());
+                event.getChannel().sendMessage("Role added!");
+            }
+            else if(newRole.contains("gratitude")&& user.isPresent() && event.getServer().isPresent())
+            {
+                Role role = event.getServer().get().getRolesByNameIgnoreCase("gratitude notification squad").get(0);
                 System.out.println("role:"+ role.toString());
                 System.out.println("user:"+ user.get().toString());
                 role.addUser(user.get());
-                //role.addUser(event.getMessageAuthor().asUser().get());
-                //user.get().addRole(role);
-                event.getChannel().sendMessage("Role added!");
+                event.getChannel().sendMessage(" "+"Role added!");
             }
             else
             {
@@ -53,7 +60,7 @@ public class Roles implements MessageCreateListener
         }
         if(event.getMessageContent().equalsIgnoreCase("!roles"))
         {
-            event.getChannel().sendMessage("List of roles:" + allroles);
+            event.getChannel().sendMessage("Here are all of the assignable roles! \n" + allroles);
         }
     }
 }

@@ -2,16 +2,16 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.util.logging.FallbackLoggerConfiguration;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class Main
 {
-    public static String weeklyPrompts = "What’s your favorite outfit? What’s a book that’s affected you in a lasting way? What  are  you  grateful  for today? " +
-            "What’s your thoughts on religion, and what’s something you put your faith in? What’s a joke that made you laugh this week?";
+    public static String weeklyPrompts = "";
 
     public static void main(String[] args)
     {
         FallbackLoggerConfiguration.setDebug(true);
-        String token = "add api token here";
+        String token = "";
         DiscordApi api = new DiscordApiBuilder().setToken(token).login().join();
         System.out.println("Add Dave to a server using: " + api.createBotInvite());
         api.addMessageCreateListener(event -> {
@@ -24,7 +24,7 @@ public class Main
         api.addMessageCreateListener(new ChangePrompts());
         api.addMessageCreateListener(new Roles());
         api.addMessageCreateListener(event -> {
-            if (event.getMessageContent().contains("Thanks Dave") || event.getMessageContent().contains("Thank you Dave"))
+            if (event.getMessageContent().toLowerCase().contains("thanks dave") || event.getMessageContent().contains("thank you dave") || event.getMessageContent().contains("thank you, dave") )
             {
                 event.addReactionsToMessage("❤");
             }
@@ -42,20 +42,21 @@ public class Main
                 event.getChannel().sendMessage("Welcome to the server! I'm Dave Green, your friendly neighborhood robot! ❤" +
                         "I can tell you what the current prompts are, give you a link to our website, or a gratitude reminder. " +
                         "Feel free to say Hi in #general, or start answering some prompts in #prompt-responses! " +
-                        "You can see everything I can do with !help");
+                        "You can use !help in #davebot to start!");
         });
         api.addServerMemberJoinListener(event -> {
             if (api.getTextChannelById("738405275899527209").isPresent())
             {
+                //    api.getUserById("267378817599930380").get().openPrivateChannel().get().sendMessage("someone joined. in the if statement");
                 api.getTextChannelById("738405275899527209").get().sendMessage("Welcome to the server! I'm Dave Green, your friendly neighborhood robot! ❤" +
                         " I can tell you what the current prompts are, give you a link to our website, or a gratitude reminder." +
-                        " Feel free to say Hi in #general, or start answering some prompts in #prompt-responses! You can see everything I can do with !help");
+                        " Feel free to say Hi in #general, or start answering some prompts in #prompt-responses! You can use !help in #davebot to see what I can do!");
             }
         });
         api.addMessageCreateListener(event -> {
             if (event.getMessageContent().equalsIgnoreCase("!daveinfo"))
                 event.getChannel().sendMessage("Dave is created in Java using the Javacord library, and was created by Dan! Dave's code can be found at https://github.com/emmyF18/DaveBot. " +
-                        "If you have any ideas or questions about Dave, feel free to message them.");
+                        "If you have any ideas or questions about Dave, feel free to ask them!");
         });
         api.addMessageCreateListener(event -> {
             if (event.getMessageContent().equalsIgnoreCase("!help"))
@@ -70,6 +71,8 @@ public class Main
                         "!choose: Picks between 2 or more items separated by comma\n" +
                         "!8ball: Can answer yes/no questions\n"+
                         "!hug: Gives you a (virtual) hug\n"+
+                        "!rolelist\n"+
+                        "! addrole <role>\n"+
                         "!help: shows this message.");
 
         });
@@ -78,8 +81,12 @@ public class Main
             {
                 String fullcommand = event.getMessageContent().substring(7);
                 String[] list = fullcommand.split(",");
-                Random random = new Random();
-                event.getChannel().sendMessage("I choose, "+ list[random.nextInt(list.length)] + "!");
+                if(list.length > 1)
+                {
+                    Random random = new Random();
+                    event.getChannel().sendMessage("I choose, " + list[random.nextInt(list.length)] + "!");
+                }
+                event.getChannel().sendMessage("You need at least 2 items to pick between!");
             }
         });
         api.addMessageCreateListener(event -> {
